@@ -6,11 +6,15 @@ local sound = require("src.sound")
 local court = require("src.court")
 local Player = require("src.player")
 local Ball = require("src.ball")
+local powerups = require("src.powerups")
+local wall = require("src.powerups.wall")
+local fog = require("src.powerups.fog")
 
 local game = {}
 
 function game.load()
   court.load()
+  powerups.load()
 
   game.players = {
     Player.new("player1", config.PLAYER_PADDING, { up = "w", down = "s" }, 1,
@@ -19,6 +23,7 @@ function game.load()
       sound.square_wave(440.0, 44100, 1/32)),
   }
   game.ball = Ball.new()
+  game.wall_beep = sound.square_wave(120.0, 44100, 1/32)
   game.score = { player1 = 0, player2 = 0 }
 
   -- "player1"/"player2": bola na mao de quem vai sacar; "jogando": bola em jogo
@@ -65,10 +70,11 @@ end
 
 local function check_paddle_hits()
   for _, player in ipairs(game.players) do
-    if collision.aabb(game.ball:rect(), player:rect()) then
+    if player:can_hit() and collision.aabb(game.ball:rect(), player:rect()) then
       sound.beep(player.beep)
       game.ball:bounce_from(player)
       game.last_hitter = player
+      powerups.on_paddle_hit(player)
     end
   end
 end
@@ -78,22 +84,42 @@ function game.update(dt)
     check_score()
     game.ball:update(dt)
     check_paddle_hits()
+    if wall.collide(game.ball) then
+      sound.beep(game.wall_beep)
+    end
   else
     serve(game.player(game.state))
   end
+
+  powerups.update(dt, game)
 
   for _, player in ipairs(game.players) do
     player:update(dt)
   end
 end
 
+-- Teclas 1..9 e 0 ativam os power-ups 1..10 para o player 1 (so com DEBUG)
+function game.keypressed(key)
+  if not config.DEBUG then
+    return
+  end
+  local n = tonumber(key)
+  if n then
+    powerups.activate(n == 0 and 10 or n, game.players[1], game)
+  end
+end
+
 function game.draw()
   court.draw_score()
   court.draw_net()
+  wall.draw()
+  powerups.draw_field()
   for _, player in ipairs(game.players) do
     player:draw()
   end
   game.ball:draw()
+  fog.draw()
+  powerups.draw_timer()
 end
 
 return game

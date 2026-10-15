@@ -10,6 +10,10 @@ function love.update(dt)
   game.update(dt)
 end
 
+function love.keypressed(key)
+  game.keypressed(key)
+end
+
 -- Desenhar na tela em cada frame
 function love.draw()
   game.draw()

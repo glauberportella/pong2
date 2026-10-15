@@ -11,7 +11,15 @@ function Ball.new()
   self.y = 0
   self.dx = config.BALL_SPEED
   self.dy = config.BALL_SPEED
+  self:reset_effects()
   return self
+end
+
+-- Estado alterado pelos power-ups
+function Ball:reset_effects()
+  self.fire = false
+  self.ice = false
+  self.blink = false
 end
 
 function Ball:rect()
@@ -51,7 +59,18 @@ function Ball:bounce_from(player)
 end
 
 function Ball:draw()
+  -- piscando: some metade do tempo
+  if self.blink and math.floor(love.timer.getTime() * 6) % 2 == 1 then
+    return
+  end
+
+  if self.fire then
+    love.graphics.setColor(1, 0.45, 0.1)
+  elseif self.ice then
+    love.graphics.setColor(0.6, 0.85, 1)
+  end
   love.graphics.rectangle("fill", self.x, self.y, config.BALL_SIZE, config.BALL_SIZE)
+  love.graphics.setColor(1, 1, 1, 1)
 end
 
 return Ball
