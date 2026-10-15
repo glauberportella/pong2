@@ -50,7 +50,7 @@ Se o `love` não estiver no PATH (instalação padrão no macOS):
 - O jogador 1 começa com a bola.
 - Antes do saque, a bola acompanha a raquete de quem vai sacar. Posicione a raquete e aperte `Espaço` para lançar.
 - Quando a bola passa pela linha de fundo de um jogador, o adversário marca um ponto.
-- Quem sofreu o ponto fica com o próximo saque.
+- Quem fez o ponto fica com o próximo saque.
 - O placar de cada jogador aparece no topo da tela, de cada lado da rede.
 
 ## Power-ups
