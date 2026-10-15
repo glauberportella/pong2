@@ -27,6 +27,14 @@ Se o `love` não estiver no PATH (instalação padrão no macOS):
 /Applications/love.app/Contents/MacOS/love .
 ```
 
+## Telas
+
+- **Início**: escolha o fundo da quadra (setas esquerda/direita ou clique nas setas) e use os botões Iniciar, Recordes, Créditos e Sair. Mouse e teclado funcionam em todas as telas.
+- **Nova partida**: digite o nome dos dois jogadores e escolha quantos pontos vencem a partida (5, 10 ou 15). Os últimos nomes e opções ficam salvos.
+- **Partida**: `Esc` pausa. Sair pela pausa abandona a partida sem registrar o resultado.
+- **Fim de partida**: mostra o vencedor, o confronto entre os dois jogadores, a maior vitória e as últimas partidas da dupla.
+- **Recordes**: ranking geral de vitórias e os confrontos mais recentes.
+
 ## Controles
 
 | Ação                | Jogador 1 (esquerda) | Jogador 2 (direita) |
@@ -34,9 +42,11 @@ Se o `love` não estiver no PATH (instalação padrão no macOS):
 | Mover para cima     | `W`                  | `O`                 |
 | Mover para baixo    | `S`                  | `L`                 |
 | Sacar               | `Espaço`             | `Espaço`            |
+| Pausar              | `Esc`                | `Esc`               |
 
 ## Regras
 
+- Vence quem fizer primeiro o número de pontos escolhido.
 - O jogador 1 começa com a bola.
 - Antes do saque, a bola acompanha a raquete de quem vai sacar. Posicione a raquete e aperte `Espaço` para lançar.
 - Quando a bola passa pela linha de fundo de um jogador, o adversário marca um ponto.
@@ -45,7 +55,7 @@ Se o `love` não estiver no PATH (instalação padrão no macOS):
 
 ## Power-ups
 
-De tempos em tempos um power-up aparece na quadra. Quando a bola passa por ele, o power-up é ativado a favor de quem sacou ou rebateu por último. Cada power-up fica ativo por 30 segundos, com um contador translúcido no centro da tela. Só um power-up fica ativo por vez; o próximo aparece alguns segundos depois que o anterior acaba.
+De tempos em tempos um power-up aparece na quadra. Quando a bola passa por ele, o power-up é ativado a favor de quem sacou ou rebateu por último. Cada power-up fica ativo por 30 segundos, com um contador translúcido no centro da tela. Só um power-up fica ativo por vez; o próximo aparece alguns segundos depois que o anterior acaba. Enquanto um power-up está ativo toca uma trilha de tensão, gerada por código e em volume baixo, que acelera nos últimos 10 segundos.
 
 | #  | Power-up          | Efeito                                                                 |
 |----|-------------------|------------------------------------------------------------------------|
@@ -62,14 +72,32 @@ De tempos em tempos um power-up aparece na quadra. Quando a bola passa por ele, 
 
 Para testar, ative `config.DEBUG = true` em `src/config.lua`: as teclas `1` a `9` e `0` ativam o power-up correspondente para o jogador 1.
 
+## Recordes e preferências
+
+Ficam na pasta de save do LÖVE, em `records.lua` e `settings.lua`:
+
+- macOS: `~/Library/Application Support/LOVE/pong2/`
+- Windows: `%APPDATA%\LOVE\pong2\`
+- Linux: `~/.local/share/love/pong2/`
+
+Para zerar os recordes basta apagar `records.lua`.
+
 ## Estrutura do projeto
 
 ```
 pong2/
   conf.lua              # Configuracao da janela
-  main.lua              # Callbacks do LOVE, delega para src/game.lua
+  main.lua              # Callbacks do LOVE, delega para a cena atual
   src/
     config.lua          # Constantes do jogo
+    scene.lua           # Troca de telas
+    scenes/             # Telas: menu, setup, play, gameover, records, credits
+    ui.lua              # Botoes, paineis e textos
+    backgrounds.lua     # Planos de fundo
+    records.lua         # Recordes das partidas
+    settings.lua        # Preferencias salvas
+    save.lua            # Leitura e escrita dos saves
+    music.lua           # Trilha de tensao dos power-ups
     game.lua            # Estado e regras da partida
     player.lua          # Raquete
     ball.lua            # Bola
@@ -83,6 +111,7 @@ pong2/
       fog.lua           # Neblina
   assets/
     Pong-Game.ttf       # Fonte usada no placar
+    bg/                 # Tela inicial e planos de fundo
     powerups/           # Icones dos power-ups (spritesheet 24x24)
 ```
 
