@@ -12,24 +12,51 @@ local fog = require("src.powerups.fog")
 
 local game = {}
 
-function game.load()
+local beeps = nil
+
+local function load_assets()
+  if beeps then
+    return
+  end
   court.load()
   powerups.load()
+  beeps = {
+    player1 = sound.square_wave(240.0, 44100, 1/32),
+    player2 = sound.square_wave(440.0, 44100, 1/32),
+    wall = sound.square_wave(120.0, 44100, 1/32),
+  }
+end
+
+-- Comeca uma partida nova.
+-- opts.names: nomes dos jogadores 1 e 2; opts.target: pontos para vencer
+function game.start(opts)
+  load_assets()
+  opts = opts or {}
+
+  game.names = opts.names or { "Jogador 1", "Jogador 2" }
+  game.target = opts.target or 10
 
   game.players = {
-    Player.new("player1", config.PLAYER_PADDING, { up = "w", down = "s" }, 1,
-      sound.square_wave(240.0, 44100, 1/32)),
+    Player.new("player1", config.PLAYER_PADDING, { up = "w", down = "s" }, 1, beeps.player1),
     Player.new("player2", config.WINDOW_W - config.PLAYER_PADDING - config.PLAYER_THICKNESS, { up = "o", down = "l" }, -1,
-      sound.square_wave(440.0, 44100, 1/32)),
+      beeps.player2),
   }
+  game.players[1].name = game.names[1]
+  game.players[2].name = game.names[2]
+
   game.ball = Ball.new()
-  game.wall_beep = sound.square_wave(120.0, 44100, 1/32)
   game.score = { player1 = 0, player2 = 0 }
+  court.set_score(game.score)
+  court.set_names(game.names)
 
   -- "player1"/"player2": bola na mao de quem vai sacar; "jogando": bola em jogo
   game.state = "player1"
   -- ultimo jogador que sacou ou rebateu
   game.last_hitter = nil
+  -- jogador que venceu a partida (nil enquanto em andamento)
+  game.winner = nil
+
+  powerups.reset()
 end
 
 function game.player(id)
@@ -45,6 +72,9 @@ local function point_for(player)
   game.score[player.id] = game.score[player.id] + 1
   court.set_score(game.score)
   game.state = game.opponent(player).id
+  if game.score[player.id] >= game.target then
+    game.winner = player
+  end
 end
 
 local function check_score()
@@ -80,12 +110,16 @@ local function check_paddle_hits()
 end
 
 function game.update(dt)
+  if game.winner then
+    return
+  end
+
   if game.state == "jogando" then
     check_score()
     game.ball:update(dt)
     check_paddle_hits()
     if wall.collide(game.ball) then
-      sound.beep(game.wall_beep)
+      sound.beep(beeps.wall)
     end
   else
     serve(game.player(game.state))
@@ -96,6 +130,11 @@ function game.update(dt)
   for _, player in ipairs(game.players) do
     player:update(dt)
   end
+end
+
+-- Encerra efeitos e musica (fim da partida ou saida para o menu)
+function game.stop()
+  powerups.reset()
 end
 
 -- Teclas 1..9 e 0 ativam os power-ups 1..10 para o player 1 (so com DEBUG)

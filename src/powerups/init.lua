@@ -6,6 +6,7 @@ local collision = require("src.collision")
 local effects = require("src.powerups.effects")
 local wall = require("src.powerups.wall")
 local fog = require("src.powerups.fog")
+local music = require("src.music")
 
 local powerups = {}
 
@@ -24,6 +25,9 @@ local function random_spawn_time()
 end
 
 function powerups.load()
+  if sheet then
+    return
+  end
   sheet = love.graphics.newImage(config.POWERUP_SHEET_PATH)
   sheet:setFilter("nearest", "nearest")
   for i = 1, #effects do
@@ -33,6 +37,15 @@ function powerups.load()
       config.POWERUP_SIZE, config.POWERUP_SIZE, sheet:getDimensions())
   end
   timer_font = love.graphics.newFont(config.FONT_PATH, config.POWERUP_TIMER_FONT_SIZE)
+end
+
+-- Comeco de partida: nada na quadra e nenhum efeito ativo
+function powerups.reset()
+  on_field = nil
+  active = nil
+  wall.clear()
+  fog.stop()
+  music.stop_now()
   spawn_timer = random_spawn_time()
 end
 
@@ -52,6 +65,7 @@ function powerups.deactivate(game)
   game.ball:reset_effects()
   wall.clear()
   fog.stop()
+  music.stop()
   active = nil
   spawn_timer = random_spawn_time()
 end
@@ -64,6 +78,7 @@ function powerups.activate(effect, owner, game)
   active = { effect = effect, owner = owner, opponent = opponent, time_left = config.POWERUP_DURATION }
   on_field = nil
   effects[effect].activate(owner, opponent, game)
+  music.start()
 end
 
 function powerups.on_paddle_hit(hitter)
@@ -74,6 +89,7 @@ end
 
 function powerups.update(dt, game)
   fog.update(dt)
+  music.update(dt, active and active.time_left)
 
   if active then
     active.time_left = active.time_left - dt

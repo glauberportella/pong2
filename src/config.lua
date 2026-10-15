@@ -12,6 +12,8 @@ config.SCORE_LEFT_Y = 50
 config.SCORE_RIGHT_X = config.WINDOW_W / 2 + 100
 config.SCORE_RIGHT_Y = config.SCORE_LEFT_Y
 config.SCORE_FONT_SIZE = 72
+config.NAME_FONT_SIZE = 24
+config.NAME_Y = 18
 
 config.NET_DASH_COUNT = 51
 config.NET_LINE_WIDTH = 3
@@ -46,6 +48,11 @@ config.WALL_COLUMNS = 2
 config.WALL_ROWS = 16
 config.WALL_BRICK_W = config.BALL_SIZE
 config.WALL_BRICK_H = config.WINDOW_H / config.WALL_ROWS
+
+-- Partida
+config.TARGET_OPTIONS = { 5, 10, 15 } -- pontos para vencer
+config.NAME_MAX_LENGTH = 12
+config.GAME_BG_DIM = 0.55 -- escurecimento do fundo durante o jogo
 
 -- Com DEBUG = true as teclas 1..9 e 0 ativam o power-up correspondente para o player 1
 config.DEBUG = false
