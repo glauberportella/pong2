@@ -21,6 +21,12 @@ Na pasta do projeto, execute:
 love .
 ```
 
+Se o `love` não estiver no PATH (instalação padrão no macOS):
+
+```sh
+/Applications/love.app/Contents/MacOS/love .
+```
+
 ## Controles
 
 | Ação                | Jogador 1 (esquerda) | Jogador 2 (direita) |
@@ -37,25 +43,61 @@ love .
 - Quem sofreu o ponto fica com o próximo saque.
 - O placar de cada jogador aparece no topo da tela, de cada lado da rede.
 
+## Power-ups
+
+De tempos em tempos um power-up aparece na quadra. Quando a bola passa por ele, o power-up é ativado a favor de quem sacou ou rebateu por último. Cada power-up fica ativo por 30 segundos, com um contador translúcido no centro da tela. Só um power-up fica ativo por vez; o próximo aparece alguns segundos depois que o anterior acaba.
+
+| #  | Power-up          | Efeito                                                                 |
+|----|-------------------|------------------------------------------------------------------------|
+| 1  | Aumentar velocidade | Sua raquete fica mais rápida                                         |
+| 2  | Diminuir velocidade | A raquete do oponente fica mais lenta                                |
+| 3  | Invisibilidade    | O oponente fica translúcido e não consegue rebater                     |
+| 4  | Altura total      | Sua raquete cobre toda a altura da tela                                |
+| 5  | Bola de fogo      | O oponente rebate a bola em chamas e fica queimado, sem rebater mais   |
+| 6  | Bola de gelo      | O oponente rebate a bola de gelo e fica paralisado (mas ainda rebate)  |
+| 7  | Bola piscando     | A bola pisca                                                           |
+| 8  | Neblina           | Neblina cobre a quadra inteira                                         |
+| 9  | Inverter controle | Para cima e para baixo do oponente ficam trocados                      |
+| 10 | Muralha           | Uma muralha no centro protege você; o oponente quebra um tijolo a cada batida até abrir passagem |
+
+Para testar, ative `config.DEBUG = true` em `src/config.lua`: as teclas `1` a `9` e `0` ativam o power-up correspondente para o jogador 1.
+
 ## Estrutura do projeto
 
 ```
 pong2/
-├── main.lua              # Código do jogo (configuração, lógica e desenho)
-└── assets/
-    └── Pong-Game.ttf     # Fonte usada no placar
+  conf.lua              # Configuracao da janela
+  main.lua              # Callbacks do LOVE, delega para src/game.lua
+  src/
+    config.lua          # Constantes do jogo
+    game.lua            # Estado e regras da partida
+    player.lua          # Raquete
+    ball.lua            # Bola
+    court.lua           # Rede e placar
+    collision.lua       # Colisao entre retangulos
+    sound.lua           # Beeps
+    powerups/
+      init.lua          # Surgimento, ativacao e contador dos power-ups
+      effects.lua       # Os 10 power-ups
+      wall.lua          # Muralha
+      fog.lua           # Neblina
+  assets/
+    Pong-Game.ttf       # Fonte usada no placar
+    powerups/           # Icones dos power-ups (spritesheet 24x24)
 ```
 
 ## Configuração
 
-As principais constantes ficam no início de `main.lua` e podem ser ajustadas:
+As principais constantes ficam em `src/config.lua` e podem ser ajustadas:
 
 | Constante          | Padrão | Descrição                         |
 |--------------------|--------|-----------------------------------|
 | `WINDOW_W`         | 1360   | Largura da janela                 |
 | `WINDOW_H`         | 800    | Altura da janela                  |
-| `BALL_SIZE`        | 20     | Tamanho da bola em pixels         |
-| `BALL_SPEED`       | 500    | Velocidade da bola (pixels/s)     |
-| `PLAYER_HEIGHT`    | 140    | Altura das raquetes               |
-| `PLAYER_SPEED`     | 375    | Velocidade das raquetes (pixels/s)|
+| `BALL_SIZE`        | 15     | Tamanho da bola em pixels         |
+| `BALL_SPEED`       | 1000   | Velocidade da bola (pixels/s)     |
+| `PLAYER_HEIGHT`    | 120    | Altura das raquetes               |
+| `PLAYER_SPEED`     | 750    | Velocidade das raquetes (pixels/s)|
 | `SCORE_FONT_SIZE`  | 72     | Tamanho da fonte do placar        |
+| `POWERUP_DURATION` | 30     | Duração de um power-up (s)        |
+| `POWERUP_SPAWN_MIN`/`MAX` | 5 / 10 | Intervalo para surgir um novo power-up (s) |
