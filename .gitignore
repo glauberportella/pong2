@@ -1,1 +1,4 @@
 /love2d
+/build
+*.swp
+.DS_Store
