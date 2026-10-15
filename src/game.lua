@@ -67,11 +67,11 @@ function game.opponent(player)
   return player == game.players[1] and game.players[2] or game.players[1]
 end
 
--- Marca ponto para o jogador; quem sofreu o ponto saca
+-- Marca ponto para o jogador; quem fez o ponto saca
 local function point_for(player)
   game.score[player.id] = game.score[player.id] + 1
   court.set_score(game.score)
-  game.state = game.opponent(player).id
+  game.state = player.id
   if game.score[player.id] >= game.target then
     game.winner = player
   end
