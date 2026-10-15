@@ -50,7 +50,7 @@ config.WALL_BRICK_W = config.BALL_SIZE
 config.WALL_BRICK_H = config.WINDOW_H / config.WALL_ROWS
 
 -- Partida
-config.TARGET_OPTIONS = { 5, 10, 15 } -- pontos para vencer
+config.TARGET_OPTIONS = { 10, 20, 30, 40, 50, 100 } -- pontos para vencer
 config.NAME_MAX_LENGTH = 12
 config.GAME_BG_DIM = 0.55 -- escurecimento do fundo durante o jogo
 
