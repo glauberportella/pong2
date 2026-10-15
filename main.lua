@@ -11,12 +11,12 @@ NET_DASH_COUNT = 51
 NET_LINE_WIDTH = 3
 DEFAULT_LINE_WITDH = 1
 
-BALL_SIZE = 20
-BALL_SPEED = 500
+BALL_SIZE = 15
+BALL_SPEED = 1000
 
-PLAYER_HEIGHT = BALL_SIZE * 7
+PLAYER_HEIGHT = BALL_SIZE * 8
 PLAYER_THICKNESS = BALL_SIZE
-PLAYER_PADDING = BALL_SIZE * 1.50
+PLAYER_PADDING = BALL_SIZE * 3
 PLAYER_START_Y = (WINDOW_H - PLAYER_HEIGHT) / 2
 PLAYER_SPEED = BALL_SPEED * 0.75
 
@@ -46,8 +46,30 @@ ball_x = player1_x + BALL_SIZE
 ball_y = PLAYER_START_Y - BALL_SIZE / 2 
 
 -- Point line
+
 PLAYER1_SCORE_LINE_X = PLAYER_PADDING
 PLAYER2_SCORE_LINE_X = WINDOW_W - PLAYER_PADDING
+
+-- Beep
+function generate_sound_source(tone, rate, length)
+  if not length then length = 1/32 end
+  local p = math.floor(rate / tone) -- 100 (comprimento da onda em samples)
+  local soundData = love.sound.newSoundData(math.floor(length * rate), rate, 16, 1)
+  for i = 0, soundData:getSampleCount() - 1 do
+    -- soundData:setSample(i, math.sin(2*math.pi*i/p)) -- senoide.
+    soundData:setSample(i, i % p < p / 2 and 1 or -1)     -- quadrada; primeira metade da onda 1 e segunda metade -1
+  end
+  return love.audio.newSource(soundData)
+end
+
+p1_beep = nil
+p2_beep = nil
+
+function beep(source)
+  if source then
+    source:play()
+  end
+end
 
 -- Draws
 
@@ -192,7 +214,10 @@ end
 
 -- Carregar valores/resources
 function love.load()
+  love.window.setTitle("Pong2")
   love.window.setMode(WINDOW_W, WINDOW_H)
+  p1_beep = generate_sound_source(240.0, 44100, 1/32)
+  p2_beep = generate_sound_source(440.0, 44100, 1/32)
 end
 
 -- Atualizar estado do jogo em cada frame
@@ -209,11 +234,13 @@ function love.update(dt)
     ball_update(dt)
     -- verificar colisao nas raquetes
     if is_colision(ball_x, ball_y, player1_x, player1_y) then
+      beep(p1_beep)
       if ball_dx < 0 then
         ball_dx = -ball_dx
       end
     end
     if is_colision(ball_x, ball_y, player2_x, player2_y) then
+      beep(p2_beep)
       ball_dx = -ball_dx
     end
   end
