@@ -72,6 +72,20 @@ De tempos em tempos um power-up aparece na quadra. Quando a bola passa por ele, 
 
 Para testar, ative `config.DEBUG = true` em `src/config.lua`: as teclas `1` a `9` e `0` ativam o power-up correspondente para o jogador 1.
 
+## Gerando os binários
+
+```sh
+scripts/build.sh
+```
+
+Gera `bin/pong2.love` e atualiza os binários de macOS (`bin/macos/pong2.app`), Windows (`bin/windows/pong2.zip`) e Linux (`bin/linux/pong2-x86_64.AppImage`) com o código atual e a versão do arquivo `VERSION`.
+
+- Precisa de `zip`, `unzip` e `python3`.
+- Na primeira vez baixa o LÖVE 11.5 de Windows e Linux para `love2d/` (pasta fora do git).
+- O AppImage de Linux é montado com `squashfs-tools`. Se não estiver instalado, o script usa Docker.
+
+No Linux, dê permissão de execução antes de abrir o jogo: `chmod +x pong2-x86_64.AppImage`. Em sistemas sem FUSE use `./pong2-x86_64.AppImage --appimage-extract-and-run`.
+
 ## Recordes e preferências
 
 Ficam na pasta de save do LÖVE, em `records.lua` e `settings.lua`:
@@ -109,6 +123,8 @@ pong2/
       effects.lua       # Os 10 power-ups
       wall.lua          # Muralha
       fog.lua           # Neblina
+  scripts/
+    build.sh            # Gera os binarios de macOS, Windows e Linux
   assets/
     Pong-Game.ttf       # Fonte usada no placar
     bg/                 # Tela inicial e planos de fundo
