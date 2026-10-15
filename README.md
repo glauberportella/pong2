@@ -3,6 +3,22 @@
 Versão do clássico Pong feita em Lua com o framework [LÖVE](https://love2d.org/).
 Dois jogadores disputam no mesmo teclado, cada um controlando uma raquete.
 
+![Tela inicial](docs/screenshots/menu.png)
+
+## Screenshots
+
+| Nova partida | Partida |
+|---|---|
+| ![Nova partida](docs/screenshots/setup.png) | ![Partida](docs/screenshots/partida.png) |
+
+| Power-up Muralha | Power-up Bola de fogo | Power-up Neblina |
+|---|---|---|
+| ![Muralha](docs/screenshots/powerup-muralha.png) | ![Bola de fogo](docs/screenshots/powerup-fogo.png) | ![Neblina](docs/screenshots/powerup-neblina.png) |
+
+| Fim de partida | Recordes |
+|---|---|
+| ![Fim de partida](docs/screenshots/fim-de-partida.png) | ![Recordes](docs/screenshots/recordes.png) |
+
 ## Requisitos
 
 - [LÖVE](https://love2d.org/) 11.x ou superior
@@ -30,7 +46,7 @@ Se o `love` não estiver no PATH (instalação padrão no macOS):
 ## Telas
 
 - **Início**: escolha o fundo da quadra (setas esquerda/direita ou clique nas setas) e use os botões Iniciar, Recordes, Créditos e Sair. Mouse e teclado funcionam em todas as telas.
-- **Nova partida**: digite o nome dos dois jogadores e escolha quantos pontos vencem a partida (5, 10 ou 15). Os últimos nomes e opções ficam salvos.
+- **Nova partida**: digite o nome dos dois jogadores e escolha quantos pontos vencem a partida (10, 20, 30, 40, 50 ou 100). Os últimos nomes e opções ficam salvos.
 - **Partida**: `Esc` pausa. Sair pela pausa abandona a partida sem registrar o resultado.
 - **Fim de partida**: mostra o vencedor, o confronto entre os dois jogadores, a maior vitória e as últimas partidas da dupla.
 - **Recordes**: ranking geral de vitórias e os confrontos mais recentes.
